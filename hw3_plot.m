@@ -65,6 +65,7 @@ grid on
 yyaxis right
 plot(t,x(:,11),'k')
 ylabel('Te')
+ylim([0,3.0])
 yyaxis left
 ylim([1e9,1e12])
 

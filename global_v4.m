@@ -2,7 +2,7 @@
 %inputs
 tic %start timing
 
-t_final_ms = .05;
+t_final_ms = 10;
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -10,7 +10,7 @@ N_e_0_cgs = 10e9; %electron density, cm^-3
 Te_0 = 0.5; %electron temp, eV
 r_reactor_cgs = 4; %cm
 l_reactor_cgs = 30; %cm
-flow_rate_sccm = 3000; %sccm
+flow_rate_sccm = 300; %sccm
 % flow_rate_sccm = 1; %sccm testing
 
 %constants (MKS)
@@ -45,7 +45,7 @@ c.N_T = c.N_0; %forget what this is for
 c.flow_rate = 4.479*10^17*flow_rate_sccm; %atoms/s
 c.f_O2 = 0.1;
 c.f_Ar = 0.9;
-c.Beta = 0.3;
+c.Beta = 0.05;
 
 %initial conditions
 N_Ar_0 = c.N_0*c.f_Ar; %m^-3
@@ -90,9 +90,12 @@ NT(9) = N_O_neg_0;
 NT(end-1) = N_e_0;
 NT(end) = Te_0; %eV
 
-integrand = @(t,x) dxdt_final(t,x,c,particles,particles_array,P,names);
-options= odeset('OutputFcn',@odeplot);
+fnc_cells = process_fun2(P);
+dTe_fun = Te_fun2(P);
 
-[t,x] = ode45(integrand,[0,t_final],NT,options);
+integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun);
+
+%options= odeset('OutputFcn',@odeplot);
+[t,x] = ode45(integrand,[0,t_final],NT);
 
 toc
