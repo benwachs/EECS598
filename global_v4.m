@@ -1,6 +1,8 @@
 %test_script
 %inputs
-t_final_ms = 10;
+tic %start timing
+
+t_final_ms = .05;
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -62,7 +64,8 @@ N_e_0 = N_e_0_cgs*10^6; %m^-3
 
 particles_cell = struct2cell(particles);
 for i = 1:length(particles_cell)
-    particles_cell{i}.setDepend(P); %initialize depend
+%     particles_cell{i}.setDepend(P); %initialize depend
+    particles_cell{i} = particles_cell{i}.setDepend(P); %initialize depend
     if i == 4
         particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-0.5;
     end
@@ -91,3 +94,5 @@ integrand = @(t,x) dxdt_final(t,x,c,particles,particles_array,P,names);
 options= odeset('OutputFcn',@odeplot);
 
 [t,x] = ode45(integrand,[0,t_final],NT,options);
+
+toc

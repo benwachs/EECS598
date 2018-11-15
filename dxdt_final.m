@@ -2,10 +2,10 @@ function dxdt_return = dxdt_final(t,x,c,particles,particles_array,P,names)
     b = num2cell(x);
     a = cell2struct(b,names);
     
-    N_tot = sum(x(1:end-1)'.*([particles_array(:).charge] == 0)); 
+    N_tot = sum(x(1:end-1)'.*([particles_array(:).charge] == 0)); %get density of uncharged particles
     
-    dxdt_return = zeros(length(particles_array)+1,1);
-    stuff = process_fun(a,c,particles,N_tot,P);
+    dxdt_return = zeros(length(particles_array)+1,1); %holder for return vals
+    stuff = process_fun(a,c,particles,N_tot,P); 
 %     for i = 1:length(particles_array)
 %         dxdt_return(i) = particles_array(i).depend*stuff; %transpose stuff?
 %     end
