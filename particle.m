@@ -1,4 +1,4 @@
-classdef particle < handle
+classdef particle
     properties
         name = '';
         E_excite = 0 %eV
