@@ -60,25 +60,25 @@ N_O_neg_0 = 0;
 N_e_0 = N_e_0_cgs*10^6; %m^-3
 
 %load particles and stuff
-[particles,P] = process_test4(); %load particles and processes
+[particles,P] = HW3_processes(); %load particles and processes
 
-particles_cell = struct2cell(particles);
+particles_cell = struct2cell(particles); %make a cell array from particles (Struct), this is so it can be iterated through in a for loop, there's probably a better way
+
 for i = 1:length(particles_cell)
-%     particles_cell{i}.setDepend(P); %initialize depend
-    particles_cell{i} = particles_cell{i}.setDepend(P); %initialize depend
+    particles_cell{i} = particles_cell{i}.setDepend(P); %initialize depend 
     if i == 4
-        particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-0.5;
+        particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-0.5; %this is for that Beta term, should be done better but I don't feel like it
     end
 
-    particles_array(i) = particles_cell{i};
-    names{i} = strcat('N_',particles_cell{i}.name);
+    particles_array(i) = particles_cell{i}; %make an array of the particles (I know theres a faster way)
+    names{i} = strcat('N_',particles_cell{i}.name); %make a cell array of the density names
 end
 
 
-names{end+1} = 'Te';
+names{end+1} = 'Te'; %last name is Te, will have to add Ti, Tg
 
-NT = zeros(length(particles_array)+1,1); %Densities/Te: build empty array for initial densities and Te
-NT(1) = N_Ar_0;
+NT = zeros(length(particles_array)+1,1); %Densities/Te: build empty array for initial densities and Te (will add Ti, Tg)
+NT(1) = N_Ar_0; %these values were set in the first section
 NT(2) = N_Ar_ex_0;
 NT(3) = N_Ar_i_0;
 NT(4) = N_O2_0;
@@ -90,12 +90,12 @@ NT(9) = N_O_neg_0;
 NT(end-1) = N_e_0;
 NT(end) = Te_0; %eV
 
-fnc_cells = process_fun2(P);
-dTe_fun = Te_fun2(P);
+fnc_cells = process_fun2(P); %this is where the magic happens, this function returns a cell array of fnc handles
+dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function handle
 
-integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun);
+integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
-%options= odeset('OutputFcn',@odeplot);
+%options= odeset('OutputFcn',@odeplot); %used if you want to plot live
 [t,x] = ode45(integrand,[0,t_final],NT);
 
 toc
