@@ -138,7 +138,7 @@ function [particles, p] = HW3_processes()
         'particles.O2_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
 % % %     p(xx+25) = process1({e},{O2},...%ion neutralization on wall (e)
 % % %         'particles.O2_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
-% % %     
+% % % 
     p(xx+25) = process1({O2_ex},{O2},... %metastable quenching on wall
         'particles.O2_ex.D(c)/c.lambda^2','0');
     p(xx+26) = process1({O2_v},{O2},... %vibrational quenching on wall
@@ -148,28 +148,11 @@ function [particles, p] = HW3_processes()
     p(xx+28) = process1({O},{O},... %recomb with sticking 2
         '(1-c.Beta)*particles.O.D(c)/c.lambda^2','0');
     
-    %inflow stuff
-%     zzz = 0;
-%     p(xx+30-zzz) = process1({},{Ar},... %Argon flow
-%         'c.f_Ar*c.flow_rate/c.vol','0');
-%     p(xx+31-zzz) = process1({},{O2},... %O2 flow
-%         'c.f_O2*c.flow_rate/c.vol','0');
-    
-    %outlfow stuff
-%     p(xx+32-zzz) = process1({Ar},{},... %Argon out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-%     p(xx+33-zzz) = process1({Ar_ex},{},... %Ar_ex out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-%     p(xx+34-zzz) = process1({O2},{},... %O2 out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-%     p(xx+35-zzz) = process1({O2_v},{},... %O2_v out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-%     p(xx+36-zzz) = process1({O2_ex},{},... %O2_ex out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-%     p(xx+37-zzz) = process1({O},{},... %O out flow
-%         '(1/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol)','0');
-    
-%     p(11+29) = process1({},{O2},... %O2 flow in
-%         '(c.f_O2*c.flow_rate/c.vol
+    particles_cell = struct2cell(particles);    % Having to remake this for indexing
+    for i = 1:numel(particles_cell)
+        if particles_cell{i}.charge == 0
+            p = [p, process1({O2_v, particles_cell{i}}, {O2, particles_cell{i}}, '2.0*10^-12*(c.T_gas/300)^0.5*10^-6', '0')];
+        end
+    end
     
 end
