@@ -1,5 +1,10 @@
 %test_script
 %inputs
+
+close all;
+clear;
+clc;
+
 tic %start timing
 
 t_final_ms = 10;
