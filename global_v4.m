@@ -65,7 +65,7 @@ N_O_neg_0 = 0;
 N_e_0 = N_e_0_cgs*10^6; %m^-3
 
 %load particles and stuff
-[particles,P] = HW3_processes(); %load particles and processes
+[particles,P] = HW4_processes(); %load particles and processes
 
 particles_cell = struct2cell(particles); %make a cell array from particles (Struct), this is so it can be iterated through in a for loop, there's probably a better way
 
