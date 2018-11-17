@@ -44,7 +44,7 @@ classdef particle
                 diffusion = obj.mobility*(c.N_0_atm/c.N_T)*Kb*c.T_ion/qe; %m^2/s
            end
         end
-        function test_return = test(obj,b)
+        function test_return = test(obj, b)
            test_return = 5*b; 
         end
         function obj = setDepend(obj, processes)

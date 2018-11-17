@@ -1,5 +1,5 @@
 %HW 3
-function [particles, p] = HW3_processes()
+function [particles, p] = HW4_processes()
 
     %particles
     Ar = particle('Ar',0,0,40,3.542,93.3,0); %1
@@ -11,8 +11,10 @@ function [particles, p] = HW3_processes()
     O2_i = particle('O2_i',12.3,1,32,0,0,2.57); %O2 ion %7
     O = particle('O',0,0,16,3.05,106.7,0); %ground state O atom %8
     O_neg = particle('O_neg',0,-1,16,0,0,3.00); %negative ion of O %9
+    O_i = particle('O_i',0,1,16,0,0, 0); %positive ion of O. Mobility
+%     currently = 0? %10
     
-    e = particle('e',0,-1,5.46e-4,0,0,0); %10
+    e = particle('e',0,-1,5.46e-4,0,0,0); %11
     
 %     particles = [Ar,Ar_ex,Ar_i,e];
     
@@ -25,6 +27,7 @@ function [particles, p] = HW3_processes()
     particles.O2_i = O2_i;
     particles.O = O;
     particles.O_neg = O_neg;
+    particles.O_i = O_i;
     particles.e = e;
     %processes
     
@@ -148,6 +151,22 @@ function [particles, p] = HW3_processes()
     p(xx+28) = process1({O},{O},... %recomb with sticking 2
         '(1-c.Beta)*particles.O.D(c)/c.lambda^2','0');
     
+    
+%     The following processes are for homework 4.
+    p = [p, process1({e, O}, {e, O}, '10^-7*10^-6', '0')];  % Elastic collisions
+%     
+    p = [p, process1({e, O}, {O_i, e, e}, '9*10^-9*a.Te^.7*exp(-13.62/a.Te)*10^-6', '13.62')];
+%     
+    p = [p, process1({O_neg, O_i}, {O, O}, '9*10^-9*a.Te^.7*exp(-13.62/a.Te)*10^-6', '0')];
+%     
+    p = [p, process1({O_neg, O}, {O2, e}, '2.3*10^-10*(c.T_gas/300)^.5*10^-6', '0')];
+%     
+    p = [p, process1({O, Ar_i}, {O_i, Ar}, '6.4*10^-12*(c.T_gas/300)^.5*10^-6', '0')];
+%     
+    p = [p, process1({O_i, O2}, {O, O2_i}, '2*10^-11*(c.T_gas/300)^.5*10^-6', '0')];
+%     
+    p = [p, process1({e, O_neg}, {O, e, e}, '5.47*10^-8*a.Te^.324*exp(-2.98/a.Te)*10^-6', '0')];
+    
     particles_cell = struct2cell(particles);    % Having to remake this for indexing
     for i = 1:numel(particles_cell)
         if particles_cell{i}.charge == 0
@@ -155,4 +174,9 @@ function [particles, p] = HW3_processes()
         end
     end
     
+    % Symmetric charge exchange
+    
+    p = [p, process1({Ar_i, Ar}, {Ar_i, Ar}, '5.66*10^-10*(c.T_gas/300)^.5*10^-6)', '0')];
+    p = [p, process1({O2_i, O2}, {O2_i, O2}, '1*10^-9*(c.T_gas/300)^.5*10^-6)', '0')];
+    p = [p, process1({O_i, O}, {O_i, O}, '1*10^-9*(c.T_gas/300)^.5*10^-6)', '0')];
 end
