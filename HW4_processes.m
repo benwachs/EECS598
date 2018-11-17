@@ -174,9 +174,8 @@ function [particles, p] = HW4_processes()
         end
     end
     
-    % Symmetric charge exchange
-    
-    p = [p, process1({Ar_i, Ar}, {Ar_i, Ar}, '5.66*10^-10*(c.T_gas/300)^.5*10^-6)', '0')];
-    p = [p, process1({O2_i, O2}, {O2_i, O2}, '1*10^-9*(c.T_gas/300)^.5*10^-6)', '0')];
-    p = [p, process1({O_i, O}, {O_i, O}, '1*10^-9*(c.T_gas/300)^.5*10^-6)', '0')];
+%     % Symmetric charge exchange
+    p = [p, process1({Ar_i, Ar}, {Ar_i, Ar}, '5.66*10^-10*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O2_i, O2}, {O2_i, O2}, '1*10^-9*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O_i, O}, {O_i, O}, '1*10^-9*(c.T_gas/300)^.5*10^-6', '0')];
 end
