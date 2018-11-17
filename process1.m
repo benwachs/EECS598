@@ -5,10 +5,15 @@ classdef process1
         k = ''; % rate coefficient K
         E = ''; % delta E
         H = ''; % delta H
+        type = '';  % Type of reaction
+        
      end
      properties (SetAccess = protected)
         R_str = ''; %rate of reaction R (string)
         %R = ''; %rate of reachtion R (function)
+     end
+    properties (Constant)
+        possibleTypes = {'CEX', 'Elastic'};
     end
     methods
         function obj = process1(input,output,rate,E, H) %constructor
@@ -37,6 +42,19 @@ classdef process1
             Te_return = Te_fun(a);
         end
         
+        function obj = setType(obj, newType)
+            isValidType = ~isempty(find(ismember(cellfun(@lower, obj.possibleTypes, 'UniformOutput', false), lower(newType)), 1));  % Determine if the input is valid
+            if isValidType
+                obj.type = newType;
+            else
+                error(['Unknown type ' newType]);
+            end
+        end
+        
+        function type = getType(obj)
+        % Returns the string for the type of reaction
+            type = obj.type;
+        end
     end
 end
 
