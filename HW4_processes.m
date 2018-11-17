@@ -80,12 +80,12 @@ function [particles, p] = HW4_processes()
     
     p(xx+2) = process1({e,O2},{O,O,e},... %dissociation
         '6.86*10^-9*exp(-6.29/a.Te) *10^-6',...
-        '6.29');
+        '6.29', '1.3');
     p(xx+3) = process1({e,O2},{O,O,e},...%dissociation #2?
         '3.49*10^-9*exp(-5.92/a.Te) *10^-6',...
-        '5.92');
+        '5.92', '0.6');
     p(xx+4) = process1({e,O2},{O,O_neg},... %dissociative attachment
-        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0');
+        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0', '1.1');
     p(xx+5)= process1({e,O2},{O2_v,e},... %vibrational excitation
         '2.80*10^-9*exp(-3.72/a.Te) *10^-6',...
         '0.19');
@@ -106,12 +106,12 @@ function [particles, p] = HW4_processes()
         '12.11');
     p(xx+11) = process1({e,O2_v},{O,O,e},... %dissociation #3
         '6.86*10^-9*exp(-6.1/a.Te) *10^-6',...
-        '6.10');
+        '6.10', '1.3');
     p(xx+12) = process1({e,O2_v},{O,O,e},... %dissociation #4
         '3.49*10^-9*exp(-5.73/a.Te) *10^-6',...
-        '5.73');
+        '5.73', '0.6');
     p(xx+13) = process1({e,O2_v},{O,O_neg},... %dissociative attachment #2
-        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0');
+        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0', '1.1');
     p(xx+14) =  process1({e,O2_ex},{O2,e},... %superelastic #2
         '2.06*10^-9*exp(-1.163/a.Te) *10^-6',...
         '-0.977');
@@ -120,22 +120,22 @@ function [particles, p] = HW4_processes()
         '11.32');
     p(xx+16) = process1({e,O2_ex},{O,O,e},... %dissociation #5
         '6.86*10^-9*exp(-5.31/a.Te) *10^-6',...
-        '5.31');
+        '5.31', '1.3');
     p(xx+17) = process1({e,O2_ex},{O,O,e},... %dissociation #6
         '3.49*10^-9*exp(-4.94/a.Te) *10^-6',...
-        '4.94');
+        '4.94', '0.6');
     p(xx+18) = process1({e,O2_ex},{O,O_neg},... %dissociative attach #3
-        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0');
+        '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0', '1.1');
     p(xx+19) = process1({O_neg,Ar_i},{O,Ar},...%ion ion neutralization
         '5.0*10^-8*(300/c.T_gas)^0.5 *10^-6','0');
     p(xx+20) = process1({O_neg,O2_i},{O,O2},... %ion ion neutralization #2
         '5.0*10^-8*(300/c.T_gas)^0.5 *10^-6','0');
     p(xx+21) = process1({e,O2_i},{O,O},... %disscociative recomb
-        '2.2*10^-8*a.Te^-0.5 *10^-6','0');
+        '2.2*10^-8*a.Te^-0.5 *10^-6','0', '7.2');
     p(xx+22) = process1({Ar_i,O2},{O2_i,Ar},... %CEX
         '4.9*10^-11*(300/c.T_gas)^0.78 *10^-6','0');
     p(xx+23) = process1({Ar_ex,O2},{O,O,Ar},... %dissociative quenching
-        '1.0*10^-10 *10^-6','0');
+        '1.0*10^-10 *10^-6','0', '6.4');
     
     p(xx+24) = process1({O2_i},{O2},...%ion neutralization on wall
         'particles.O2_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
