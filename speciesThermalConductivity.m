@@ -22,3 +22,5 @@ denominator = pi*avgSigmaLJ^2;
 kappa = coef*numerator/denominator;
 
 end
+
+%% This is how you commit a single file
