@@ -25,6 +25,7 @@ c.me = 9.10938e-31; %kg
 c.m_e = 9.10938e-31; %kg
 c.Kb = 1.38064852e-23; %boltzmann const J/k
 c.kb = 1.38064852e-23; %boltzmann const J/k
+c.eV2K = 11604.52; %ev to kelvin
 
 %convert units
 t_final = t_final_ms/1000; %s
