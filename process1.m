@@ -3,14 +3,15 @@ classdef process1
         input = {}; %input particles
         output = {}; %output particles
         k = ''; % rate coefficient K
-        E = ''; %delta E
+        E = ''; % delta E
+        H = ''; % delta H
      end
      properties (SetAccess = protected)
         R_str = ''; %rate of reaction R (string)
         %R = ''; %rate of reachtion R (function)
     end
     methods
-        function obj = process1(input,output,rate,E) %constructor
+        function obj = process1(input,output,rate,E, H) %constructor
             if nargin > 0
                 obj.input = input;
                 obj.output = output;
@@ -19,6 +20,9 @@ classdef process1
                 obj.R_str = rate;
                 for i = 1:length(input)
                     obj.R_str = strcat('a.N_',input{i}.name,'*',obj.R_str);
+                end
+                if nargin >= 5
+                    obj.H = H;
                 end
 %                 obj.R = str2func(strcat('@(a)',obj.R_str));
             end
