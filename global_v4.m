@@ -48,8 +48,9 @@ c.N_T = c.N_0; %forget what this is for
 
 %flow stuff
 c.flow_rate = 4.479*10^17*flow_rate_sccm; %atoms/s
-c.f_O2 = 0.1;
-c.f_Ar = 0.9;
+% c.f_O2 = 0.1;
+% c.f_Ar = 0.9;
+
 c.Beta = 0.05;
 
 %initial conditions
@@ -66,6 +67,8 @@ N_e_0 = N_e_0_cgs*10^6; %m^-3
 
 %load particles and stuff
 [particles,P] = HW4_processes(); %load particles and processes
+particles.O2 = particles.O2.setFlowFraction(0.1);
+particles.Ar = particles.Ar.setFlowFraction(0.9);
 
 particles_cell = struct2cell(particles); %make a cell array from particles (Struct), this is so it can be iterated through in a for loop, there's probably a better way
 
