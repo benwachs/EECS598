@@ -20,5 +20,4 @@ coef = 25/34*3/2*c.kb;
 numerator = ((species.mass + avgMass)*pi*c.kb*T_gas/2/species.mass/avgMass)^.5;
 denominator = pi*avgSigmaLJ^2;
 kappa = coef*numerator/denominator;
-
 end
