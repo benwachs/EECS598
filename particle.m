@@ -14,6 +14,7 @@ classdef particle
         reduced = 0
         density = 0
         depend
+        flowFraction = 0
     end
     methods
         function obj = particle(name,E_excite,charge,mass_amu,sigma_ang,epsilon,mobility)
@@ -63,10 +64,14 @@ classdef particle
             end
             obj.depend = temp;
         end %end set depend
+        
         function dN_return = dN(obj,processes,a)
             dN_return = 0;
         end
          
+        function obj = setFlowFraction(obj, flowFraction)
+            obj.flowFraction = flowFraction;
+        end
     end
 end
 
