@@ -25,6 +25,7 @@ c.me = 9.10938e-31; %kg
 c.m_e = 9.10938e-31; %kg
 c.Kb = 1.38064852e-23; %boltzmann const J/k
 c.kb = 1.38064852e-23; %boltzmann const J/k
+c.eV2K = 11604.52; %ev to kelvin
 
 %convert units
 t_final = t_final_ms/1000; %s
@@ -41,6 +42,7 @@ c.TgeV = TgeV;
 c.T_gas = T_gas_0;
 c.T_ion = T_ion_0;
 c.T_ion_eV = T_ion_0/11604.5;
+c.T_wall = 300; %kelvin
 
 c.N_0_atm = 101325/(273*c.Kb); %for diffusion calc
 c.N_0 = P_0/(c.Kb*T_gas_0); %m^-3
@@ -108,6 +110,8 @@ NT(end) = Te_0; %eV
 
 fnc_cells = process_fun2(P); %this is where the magic happens, this function returns a cell array of fnc handles
 dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function handle
+dTg_fun = [];
+
 
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
