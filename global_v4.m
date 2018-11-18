@@ -42,6 +42,7 @@ c.TgeV = TgeV;
 c.T_gas = T_gas_0;
 c.T_ion = T_ion_0;
 c.T_ion_eV = T_ion_0/11604.5;
+c.T_wall = 300; %kelvin
 
 c.N_0_atm = 101325/(273*c.Kb); %for diffusion calc
 c.N_0 = P_0/(c.Kb*T_gas_0); %m^-3
@@ -80,7 +81,6 @@ for i = 1:length(particles_cell)
     names{i} = strcat('N_',particles_cell{i}.name); %make a cell array of the density names
 end
 
-
 names{end+1} = 'Te'; %last name is Te, will have to add Ti, Tg
 
 NT = zeros(length(particles_array)+1,1); %Densities/Te: build empty array for initial densities and Te (will add Ti, Tg)
@@ -98,6 +98,8 @@ NT(end) = Te_0; %eV
 
 fnc_cells = process_fun2(P); %this is where the magic happens, this function returns a cell array of fnc handles
 dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function handle
+dTg_fun = [];
+
 
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
