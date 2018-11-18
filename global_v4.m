@@ -112,6 +112,6 @@ dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function 
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
 options= odeset('OutputFcn', @odeplot); %used if you want to plot live
-[t,x] = ode45(integrand,[0,t_final],NT, options);
+[t,x] = ode23(integrand,[0,t_final],NT);
 
 toc

@@ -18,7 +18,8 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
     
     dxdt_return(1:end-1) = (vertcat(particles_array.depend)*process_return)'; %where the magic happens. Multiplies the dependencies by all the process returns
     
-    dxdt_return(end-1) = dxdt_return(3)+dxdt_return(7)-dxdt_return(9); %Electron stuff DO BETTER! Sets the number of electrons equal to the number of ions- negative ions.
+%     dxdt_return(end-1) = dxdt_return(3)+dxdt_return(7)+dxdt_return(10)-dxdt_return(9); %Electron stuff DO BETTER! Sets the number of electrons equal to the number of ions- negative ions.
+     dxdt_return(end-1) = sum([particles_array(1:end-1).charge]'.*dxdt_return(1:numel(particles_array)-1));
     
 %     N_tot = x(1)+x(2)+x(4)+x(5)+x(6)+x(8); %DO BETTER!
     
