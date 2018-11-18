@@ -4,7 +4,7 @@ classdef process1
         output = {}; %output particles
         k = ''; % rate coefficient K
         E = ''; % delta E
-        H = ''; % delta H
+        H = '0'; % delta H
         type = '';  % Type of reaction
         
      end
