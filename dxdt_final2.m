@@ -26,26 +26,40 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
     
     %FLOW STUFF DO BETTER!! This could all be done programatically, but I
     %got paranoid
-    Ar_in = c.f_Ar*c.flow_rate/c.vol;
-    O2_in = c.f_O2*c.flow_rate/c.vol;
+    inflowRates = c.flow_rate*[particles_array(:).flowFraction]./c.vol;
+    inflowRates = inflowRates(:);
+    % This while loop ensures that inflowRates is the same size as x so
+    % that we can add them together.
+    while numel(inflowRates) < numel(x)
+        inflowRates = [inflowRates; 0];     
+    end
+%     Ar_in = c.f_Ar*c.flow_rate/c.vol;
+%     O2_in = c.f_O2*c.flow_rate/c.vol;
+    outflowRates = (x./N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+    outflowRates([particles_array(:).charge] ~= 0) = 0;
+    % Ensure that outflowRates and x are the same size
+    while numel(outflowRates) < numel(x)
+        outflowRates = [outflowRates; 0];
+    end
+%     outflowRates = outflowRates(:); % Make into a column vector
     
-    Ar_out = (x(1)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
-    Ar_ex_out = (x(2)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
-    O2_out = (x(4)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
-    O2_v_out = (x(5)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
-    O2_ex_out = (x(6)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
-    O_out = (x(8)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     Ar_out = (x(1)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     Ar_ex_out = (x(2)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     O2_out = (x(4)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     O2_v_out = (x(5)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     O2_ex_out = (x(6)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     O_out = (x(8)/N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol);
+%     
+%     dxdt_return(1) = dxdt_return(1)+Ar_in; %Ar in
+%     dxdt_return(4) = dxdt_return(4)+O2_in; %O2 in
     
-    dxdt_return(1) = dxdt_return(1)+Ar_in; %Ar in
-    dxdt_return(4) = dxdt_return(4)+O2_in; %O2 in
+%     dxdt_return(1) = dxdt_return(1)-Ar_out; %Ar out
+%     dxdt_return(2) = dxdt_return(2)-Ar_ex_out; %Ar_ex out
+%     dxdt_return(4) = dxdt_return(4)-O2_out; %O2 out
+%     dxdt_return(5) = dxdt_return(5)-O2_v_out;%O2_v out
+%     dxdt_return(6) = dxdt_return(6)-O2_ex_out; %O2_ex out
+%     dxdt_return(8) = dxdt_return(8)-O_out; %O out
+    dxdt_return = dxdt_return + inflowRates - outflowRates;
     
-    dxdt_return(1) = dxdt_return(1)-Ar_out; %Ar out
-    dxdt_return(2) = dxdt_return(2)-Ar_ex_out; %Ar_ex out
-    dxdt_return(4) = dxdt_return(4)-O2_out; %O2 out
-    dxdt_return(5) = dxdt_return(5)-O2_v_out;%O2_v out
-    dxdt_return(6) = dxdt_return(6)-O2_ex_out; %O2_ex out
-    dxdt_return(8) = dxdt_return(8)-O_out; %O out
-    
-
     dxdt_return(end) = dTe_fun{1}(a,c,particles,N_tot,t); %compute the Te. Will have to add line for Tg, Ti
 end
