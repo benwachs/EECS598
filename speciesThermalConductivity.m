@@ -1,4 +1,4 @@
-function kappa = speciesThermalConductivty(species, particles_array, T_gas, c)
+function kappa = speciesThermalConductivity(species, particles_array, T_gas, c)
 %% kappa = speciesThermalConductivity(species, particles, T_gas, c) computes the thermal conductivity for a certain species
 % species is the particle for which you want the thermal conductivity,
 % particles_array is an object array of all particles (can include charged

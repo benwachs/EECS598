@@ -29,7 +29,7 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
 %     Ar_in = c.f_Ar*c.flow_rate/c.vol;
 %     O2_in = c.f_O2*c.flow_rate/c.vol;
 %     outflowRates = (x./N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol); %old version
-    outflowRates = (x./N_tot)*(1+(N_tot-c.N_0)/c.N_0)*(c.flow_rate/c.vol); %new version 
+    outflowRates = (x./N_tot)*(1+(N_tot*c.Kb*a.T_gas-c.P_0)/c.P_0)*(c.flow_rate/c.vol); %new version 
     outflowRates([particles_array(:).charge] ~= 0) = 0;
     % Ensure that outflowRates and x are the same size
     while numel(outflowRates) < numel(x)
@@ -53,10 +53,22 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
 %     dxdt_return(5) = dxdt_return(5)-O2_v_out;%O2_v out
 %     dxdt_return(6) = dxdt_return(6)-O2_ex_out; %O2_ex out
 %     dxdt_return(8) = dxdt_return(8)-O_out; %O out
+
     dxdt_return = dxdt_return + inflowRates - outflowRates;
     
-    dxdt_return(end-2) = dTe_fun{1}(a,c,particles,N_tot,t); %compute the Te. Will have to add line for Tg, Ti
-    dxdt_return(end-1) = dTg_fun{1}(x,a,c,particles,particles_array,N_tot,t,P); %compute Tg
-    dxdt_return(end) = findIonTemperature2(x,c,particles_array,dxdt_return(end-1));
+    dxdt_return(end-2) = dTe_fun{1}(a,c,particles,N_tot,t); %compute Te
+    dxdt_return(end-1) = dTg_fun{1}(x,a,c,particles,particles_array,N_tot,t,P); %compute T_gas
+    posIonLocs = [particles_array(:).charge] > 0;
+    N_i_total = sum(x(1:end-3)'.*(posIonLocs));
+    dN_i_total_dt = sum(dxdt_return(1:end-3)'.*(posIonLocs));
+    
+    dxdt_return(end) = 0;
+    for i = 1:numel(posIonLocs) % There's a faster way to do this, but fuck it
+        dxdt_return(end) = dxdt_return(end) + posIonLocs(i).*(...
+            dN_i_total_dt(i)*dxdt_return(end - 2)^2*particles_cell(i).mobilit...
+            );
+    end
+%     dxdt_return(end) = dxdt_return(end-1); %set T_ion = T_gas for debugging
+%     dxdt_return(end) = findIonTemperature(x,c,particles_array) - x(end); %compute T_ion TEST EDITION
 
 end
