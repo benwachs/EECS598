@@ -1,25 +1,25 @@
-function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun)
+function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun,dTg_fun)
     %NOTE x = a = densities and Temps
     b = num2cell(x); %these two lines turn the array (x) into a struct (a) that is in the format the processes like
     a = cell2struct(b,names);
     
-    N_tot = sum(x(1:end-1)'.*([particles_array(:).charge] == 0)); %get density of uncharged particles (for flow stuff) I vectorized this to make it more confusing!
+    N_tot = sum(x(1:end-3)'.*([particles_array(:).charge] == 0)); %get density of uncharged particles (for flow stuff) I vectorized this to make it more confusing!
     
-    process_return = zeros(length(particles_array)+1,1); %holder for process vals NOTE: the +1 is to include the Te, will have to expand for Ti, Tg
+    process_return = zeros(length(P),1); %holder for process vals
     
     for i = 1:length(P)
         process_return(i) = fnc_cells{i} (a,c,particles,N_tot); %could vectorize this
     end
     
     
-    dxdt_return = zeros(length(particles_array)+1,1); %holder for return vals
+    dxdt_return = zeros(length(particles_array)+3,1); %holder for return vals
 %     stuff = process_fun(a,c,particles,N_tot,P); 
     
     
-    dxdt_return(1:end-1) = (vertcat(particles_array.depend)*process_return)'; %where the magic happens. Multiplies the dependencies by all the process returns
+    dxdt_return(1:end-3) = (vertcat(particles_array.depend)*process_return)'; %where the magic happens. Multiplies the dependencies by all the process returns
     
 %     dxdt_return(end-1) = dxdt_return(3)+dxdt_return(7)+dxdt_return(10)-dxdt_return(9); %Electron stuff DO BETTER! Sets the number of electrons equal to the number of ions- negative ions.
-     dxdt_return(end-1) = sum([particles_array(1:end-1).charge]'.*dxdt_return(1:numel(particles_array)-1));
+     dxdt_return(end-3) = sum([particles_array(1:end-1).charge]'.*dxdt_return(1:numel(particles_array)-1));
     
 %     N_tot = x(1)+x(2)+x(4)+x(5)+x(6)+x(8); %DO BETTER!
     
@@ -62,5 +62,8 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
 %     dxdt_return(8) = dxdt_return(8)-O_out; %O out
     dxdt_return = dxdt_return + inflowRates - outflowRates;
     
-    dxdt_return(end) = dTe_fun{1}(a,c,particles,N_tot,t); %compute the Te. Will have to add line for Tg, Ti
+    dxdt_return(end-2) = dTe_fun{1}(a,c,particles,N_tot,t); %compute the Te. Will have to add line for Tg, Ti
+    dxdt_return(end-1) = dTg_fun{1}(x,a,c,particles,particles_array,N_tot,t,P); %compute Tg
+    dxdt_return(end) = findIonTemperature2(x, c, particles_array);
+
 end
