@@ -1,5 +1,5 @@
-function Ti = findIonTemperature2(x, c, particles_array)
+function Ti = findIonTemperature2(x, c, particles_array,Tg)
 
-Ti = x(end-1)+4; %little cheat for now2as
+Ti = Tg+4; %little cheat for now2as
 
 end

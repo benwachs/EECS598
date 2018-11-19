@@ -11,8 +11,8 @@ function [particles, p] = HW4_processes()
     O2_i = particle('O2_i',12.3,1,32,0,0,2.57); %O2 ion %7
     O = particle('O',0,0,16,3.05,106.7,0); %ground state O atom %8
     O_neg = particle('O_neg',0,-1,16,0,0,3.00); %negative ion of O %9
-    O_i = particle('O_i',0,1,16,0,0, 0); %positive ion of O. Mobility
-%     currently = 0? %10
+    O_i = particle('O_i',0,1,16,0,0, 3.3); %positive ion of O. Mobility
+%     currently = 0? %10 %changed to 3.3 based on Danailov et al
     
     e = particle('e',0,-1,5.46e-4,0,0,0); %11
     
@@ -158,24 +158,30 @@ function [particles, p] = HW4_processes()
     p = [p, process1({e, O}, {e, O}, '10^-7*10^-6', '0')];  % Elastic collision
     p(end) = p(end).setType('Elastic');
 %     
-    p = [p, process1({e, O}, {O_i, e, e}, '9*10^-9*a.Te^.7*exp(-13.62/a.Te)*10^-6', '13.62')];  %Ionization
+    p = [p, process1({e, O}, {O_i, e, e}, '9*10^-9*a.Te^0.7*exp(-13.62/a.Te)*10^-6', '13.62')];  %Ionization
 %     
-    p = [p, process1({O_neg, O_i}, {O, O}, '9*10^-9*a.Te^.7*exp(-13.62/a.Te)*10^-6', '0')];
+    p = [p, process1({O_neg, O_i}, {O, O}, '4*10^-8*(300/a.T_gas)^-0.43*10^-6', '0')]; %ion ion neutralization WAS WRONG
 %     
-    p = [p, process1({O_neg, O}, {O2, e}, '2.3*10^-10*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O_neg, O}, {O2, e}, '2.3*10^-10*(a.T_gas/300)^.5*10^-6', '0')]; %associative detach
+%      
+    p = [p, process1({O, Ar_i}, {O_i, Ar}, '6.4*10^-12*(a.T_gas/300)^.5*10^-6', '0')]; %CEX
+    p(end) = p(end).setType('CEX');
+    
+    p = [p, process1({O, Ar_ex}, {O, Ar}, '4.1*10^-11*(a.T_gas/300)^.5*10^-6', '0')]; % electronic quenching
+
 %     
-    p = [p, process1({O, Ar_i}, {O_i, Ar}, '6.4*10^-12*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O_i, O2}, {O, O2_i}, '2*10^-11*(a.T_gas/300)^.5*10^-6', '0')];    % CEX
     p(end) = p(end).setType('CEX');
 %     
-    p = [p, process1({O_i, O2}, {O, O2_i}, '2*10^-11*(c.T_gas/300)^.5*10^-6', '0')];    % CEX
-    p(end) = p(end).setType('CEX');
-%     
-    p = [p, process1({e, O_neg}, {O, e, e}, '5.47*10^-8*a.Te^.324*exp(-2.98/a.Te)*10^-6', '0')];
+    p = [p, process1({e, O_neg}, {O, e, e}, '5.47*10^-8*a.Te^.324*exp(-2.98/a.Te)*10^-6', '0')]; %detachment
+    
+    p = [p, process1({O_i},{O},...%O ion neutralization on wall
+        'particles.O_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0')];
     
     particles_cell = struct2cell(particles);    % Having to remake this for indexing
     for i = 1:numel(particles_cell)
         if particles_cell{i}.charge == 0
-            p = [p, process1({O2_v, particles_cell{i}}, {O2, particles_cell{i}}, '2.0*10^-12*(c.T_gas/300)^0.5*10^-6', '0', num2str(particles_cell{i}.E_excite))];
+            p = [p, process1({O2_v, particles_cell{i}}, {O2, particles_cell{i}}, '2.0*10^-12*(a.T_gas/300)^0.5*10^-6', '0', num2str(particles_cell{i}.E_excite))];
         end
     end
     
