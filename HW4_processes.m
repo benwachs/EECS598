@@ -36,7 +36,7 @@ function [particles, p] = HW4_processes()
     
     p(1) = process1({e,Ar},{Ar,e},... %elastic
         '3.9*10^-7*exp(-4.6/(a.Te+0.5))*10^-6',...
-        '2*c.m_e/particles.Ar.mass*(3/2)*(a.Te-c.TgeV)'); %note the c
+        '2*c.m_e/particles.Ar.mass*(3/2)*(a.Te-a.T_gas*c.K2eV)'); %note the c
     p(end) = p(end).setType('Elastic');
     p(2) = process1({e, Ar},{Ar_ex,e},...
         '2.5*10^-9*a.Te^0.74*exp(-11.7/a.Te)*10^-6',...
@@ -59,27 +59,27 @@ function [particles, p] = HW4_processes()
     p(9) = process1({Ar_ex,Ar_ex},{Ar_i,Ar,e},... %penning ionization
         '1.2*10^-9*10^-6','0');
     p(10) = process1({Ar_i},{Ar},... % wall neutralization
-        'particles.Ar_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
+        'particles.Ar_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0');
 %     p(11) = process1({e},{},... % wall neutralization (e)
 %         'particles.Ar_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
     p(11) = process1({Ar_ex},{Ar},... % wall quenching
-        'particles.Ar.D(c)/c.lambda^2','0'); 
+        'particles.Ar.D(c,a,N_tot)/c.lambda^2','0'); 
     
     p(yy+1) = process1({e,O2},{O2,e},... %elastic ADD STUFF!!
         '4.79*10^-8*a.Te^0.5 *10^-6',...
-        '2*c.m_e/particles.O2.mass*(3/2)*(a.Te-c.TgeV)');
+        '2*c.m_e/particles.O2.mass*(3/2)*(a.Te-a.T_gas*c.K2eV)');
     p(end) = p(end).setType('Elastic');
     p(yy+2) = process1({e,O2_v},{O2_v,e},... %elastic ADD STUFF!!
         '4.79*10^-8*a.Te^0.5 *10^-6',...
-        '2*c.m_e/particles.O2_v.mass*(3/2)*(a.Te-c.TgeV)');
+        '2*c.m_e/particles.O2_v.mass*(3/2)*(a.Te-a.T_gas*c.K2eV)');
     p(end) = p(end).setType('Elastic');
     p(yy+3) = process1({e,O2_ex},{O2_ex,e},... %elastic ADD STUFF!!
         '4.79*10^-8*a.Te^0.5 *10^-6',...
-        '2*c.m_e/particles.O2_ex.mass*(3/2)*(a.Te-c.TgeV)');
+        '2*c.m_e/particles.O2_ex.mass*(3/2)*(a.Te-a.T_gas*c.K2eV)');
     p(end) = p(end).setType('Elastic');
     p(yy+4) = process1({e,O},{O,e},... %elastic ADD STUFF!!
         '4.79*10^-8*a.Te^0.5 *10^-6',...
-        '2*c.m_e/particles.O.mass*(3/2)*(a.Te-c.TgeV)');
+        '2*c.m_e/particles.O.mass*(3/2)*(a.Te-a.T_gas*c.K2eV)');
     p(end) = p(end).setType('Elastic');
     
     p(xx+2) = process1({e,O2},{O,O,e},... %dissociation
@@ -131,27 +131,27 @@ function [particles, p] = HW4_processes()
     p(xx+18) = process1({e,O2_ex},{O,O_neg},... %dissociative attach #3
         '1.07*10^-9*a.Te^-1.39*exp(-6.26/a.Te) *10^-6','0', '-1.1');
     p(xx+19) = process1({O_neg,Ar_i},{O,Ar},...%ion ion neutralization
-        '5.0*10^-8*(300/c.T_gas)^0.5 *10^-6','0');
+        '5.0*10^-8*(300/a.T_gas)^0.5 *10^-6','0');
     p(xx+20) = process1({O_neg,O2_i},{O,O2},... %ion ion neutralization #2
-        '5.0*10^-8*(300/c.T_gas)^0.5 *10^-6','0');
+        '5.0*10^-8*(300/a.T_gas)^0.5 *10^-6','0');
     p(xx+21) = process1({e,O2_i},{O,O},... %disscociative recomb
         '2.2*10^-8*a.Te^-0.5 *10^-6','0', '-7.2');
     p(xx+22) = process1({Ar_i,O2},{O2_i,Ar},... %CEX
-        '4.9*10^-11*(300/c.T_gas)^0.78 *10^-6','0');
+        '4.9*10^-11*(300/a.T_gas)^0.78 *10^-6','0');
     p(end) = p(end).setType('CEX');
-    p(xx+23) = process1({Ar_ex,O2},{O,O,Ar},... %dissociative quenching
-        '1.0*10^-10 *10^-6','0', '-6.4');
+    p(xx+23) = process1({Ar_ex,O2},{O,O,Ar},... %dissociative quenching %ADDED TEMP DEPEND
+        '1.0*10^-10*(a.T_gas/300)^.5*10^-6','0', '-6.4');
     
     p(xx+24) = process1({O2_i},{O2},...%ion neutralization on wall
-        'particles.O2_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
+        'particles.O2_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0');
     p(xx+25) = process1({O2_ex},{O2},... %metastable quenching on wall
-        'particles.O2_ex.D(c)/c.lambda^2','0');
+        'particles.O2_ex.D(c,a,N_tot)/c.lambda^2','0');
     p(xx+26) = process1({O2_v},{O2},... %vibrational quenching on wall
-        'particles.O2_v.D(c)/c.lambda^2','0');
+        'particles.O2_v.D(c,a,N_tot)/c.lambda^2','0');
     p(xx+27) = process1({O},{O2},... %recomb with sticking 1
-        '(c.Beta/2)*particles.O.D(c)/c.lambda^2','0');
+        '(c.Beta/2)*particles.O.D(c,a,N_tot)/c.lambda^2','0');
     p(xx+28) = process1({O},{O},... %recomb with sticking 2
-        '(1-c.Beta)*particles.O.D(c)/c.lambda^2','0');
+        '(1-c.Beta)*particles.O.D(c,a,N_tot)/c.lambda^2','0');
     
     
 %     The following processes are for homework 4.
@@ -176,7 +176,7 @@ function [particles, p] = HW4_processes()
     p = [p, process1({e, O_neg}, {O, e, e}, '5.47*10^-8*a.Te^.324*exp(-2.98/a.Te)*10^-6', '0')]; %detachment
     
     p = [p, process1({O_i},{O},...%O ion neutralization on wall
-        'particles.O_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0')];
+        'particles.O_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0')];
     
     particles_cell = struct2cell(particles);    % Having to remake this for indexing
     for i = 1:numel(particles_cell)
@@ -186,10 +186,10 @@ function [particles, p] = HW4_processes()
     end
     
 %     % Symmetric charge exchange
-    p = [p, process1({Ar_i, Ar}, {Ar_i, Ar}, '5.66*10^-10*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({Ar_i, Ar}, {Ar_i, Ar}, '5.66*10^-10*(a.T_gas/300)^.5*10^-6', '0')];
     p(end) = p(end).setType('CEX');
-    p = [p, process1({O2_i, O2}, {O2_i, O2}, '1*10^-9*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O2_i, O2}, {O2_i, O2}, '1*10^-9*(a.T_gas/300)^.5*10^-6', '0')];
     p(end) = p(end).setType('CEX');
-    p = [p, process1({O_i, O}, {O_i, O}, '1*10^-9*(c.T_gas/300)^.5*10^-6', '0')];
+    p = [p, process1({O_i, O}, {O_i, O}, '1*10^-9*(a.T_gas/300)^.5*10^-6', '0')];
     p(end) = p(end).setType('CEX');
 end

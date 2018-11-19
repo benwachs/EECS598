@@ -47,7 +47,7 @@ ylabel('Density')
 legend('O_2','O','Ar','O_2(V)')
 grid on
 
-%% third plot pt 1
+%% third plot pt 1 Temperature
 figure
 plot(t,T_gas,'*',t,T_ion,'LineWidth',2)
 xlabel('Time')

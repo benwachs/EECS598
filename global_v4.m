@@ -3,7 +3,7 @@ clear;
 
 tic %start timing
 
-t_final_ms = 5; %ms
+t_final_ms = 25; %ms
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -11,7 +11,7 @@ N_e_0_cgs = 10e9; %electron density, cm^-3
 Te_0 = 0.5; %electron temp, eV
 r_reactor_cgs = 4; %cm
 l_reactor_cgs = 30; %cm
-flow_rate_sccm = 300; %sccm
+flow_rate_sccm = 1000; %sccm
 % flow_rate_sccm = 1; %sccm testing
 
 %constants (MKS)
@@ -22,6 +22,7 @@ c.m_e = 9.10938e-31; %kg
 c.Kb = 1.38064852e-23; %boltzmann const J/k
 c.kb = 1.38064852e-23; %boltzmann const J/k
 c.eV2K = 11604.52; %ev to kelvin
+c.K2eV = 1/c.eV2K;
 
 %convert units
 t_final = t_final_ms/1000; %s
@@ -51,7 +52,7 @@ c.T_inlet = 300; %kelvin
 % c.f_O2 = 0.1;
 % c.f_Ar = 0.9;
 
-c.Beta = 0.05;
+c.Beta = 0.5;
 
 %load particles and stuff
 [particles,P] = HW4_processes(); %load particles and processes
@@ -121,6 +122,6 @@ dTg_fun = Tg_fun(P,particles_array);
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun,dTg_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
 options= odeset('OutputFcn', @odeplot); %used if you want to plot live
-[t,x] = ode45(integrand,[0,t_final],NT,options);
+[t,x] = ode45(integrand,[0,t_final],NT);
 
 toc
