@@ -58,7 +58,7 @@ function dxdt_return = dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_c
     
     dxdt_return(end-2) = dTe_fun{1}(a,c,particles,N_tot,t); %compute Te
     dxdt_return(end-1) = dTg_fun{1}(x,a,c,particles,particles_array,N_tot,t,P); %compute T_gas
-    dxdt_return(end) = dxdt_return(end-1); %for debugging
+    dxdt_return(end) = dxdt_return(end-1); %set T_ion = T_gas for debugging
 %     dxdt_return(end) = findIonTemperature(x,c,particles_array); %compute T_ion TEST EDITION
 
 end

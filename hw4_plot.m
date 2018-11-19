@@ -49,7 +49,6 @@ grid on
 
 %% third plot pt 1
 figure
-% plot(t,T_ion,'LineWidth',2)
 plot(t,T_gas,'*',t,T_ion,'LineWidth',2)
 xlabel('Time')
 ylabel('T (K)')

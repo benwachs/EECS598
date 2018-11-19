@@ -14,7 +14,7 @@ CEX_string(end) = ')';
 H_string = '3/2*(';
 for i = 1:length(P)     % Iterate through every process
     if ~strcmpi(P(i).H,'0')     % If there is delta H
-        H_string = [H_string, P(i).R_str, '*', P(i).H, '+'];  %
+        H_string = [H_string, P(i).R_str, '*c.qe*', P(i).H, '+'];  %note we changed this from eV to J
     end
 end
 H_string(end) = ')';
@@ -46,8 +46,8 @@ for i = 1:length(P)     % Iterate through every process
 end
 e_string(end) = ')';
 
-% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)',CEX_string,'-',H_string,'-',k_string,'+',flow_string,'+',e_string];
 dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',H_string,'-',k_string,'+',flow_string,'+',e_string];
+% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',k_string,'+',flow_string,'+',e_string]; %for testing
 
 dTg_fun_test = str2func(['@(x,a,c,particles,particles_array,N_tot,t,P)',dTg_fun_return_string]); %make function
 

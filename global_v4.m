@@ -116,7 +116,7 @@ NT(end) = T_ion_0; %kelvin
 
 fnc_cells = process_fun2(P); %this is where the magic happens, this function returns a cell array of fnc handles
 dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function handle
-dTg_fun = Tg_fun_test(P,particles_array); %THIS IS FOR TESTING
+dTg_fun = Tg_fun(P,particles_array);
 
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun,dTg_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
