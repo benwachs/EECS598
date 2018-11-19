@@ -36,13 +36,13 @@ classdef particle
                 obj.reduced = PROTONMASS*(mass_amu*40)/(mass_amu+40); %reduced mass with Ar %kg
             end
         end
-        function diffusion = D(obj,c)
+        function diffusion = D(obj,c,a,N_tot)
            Kb = 1.38064852e-23; %boltzmann const J/k
            qe = 1.60217662e-19; %electron charge
            if obj.mobility == 0
-                diffusion = (3/16)*(1/c.N_T)*(2*pi*Kb*c.T_gas/obj.reduced)^0.5/(pi*obj.sigma^2); %check units
+                diffusion = (3/16)*(1/N_tot)*(2*pi*Kb*a.T_gas/obj.reduced)^0.5/(pi*obj.sigma^2); %check units
            else
-                diffusion = obj.mobility*(c.N_0_atm/c.N_T)*Kb*c.T_ion/qe; %m^2/s
+                diffusion = obj.mobility*(c.N_0_atm/N_tot)*Kb*a.T_ion/qe; %m^2/s
            end
         end
         function test_return = test(obj, b)
