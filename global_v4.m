@@ -1,6 +1,3 @@
-%test_script
-%inputs
-
 close all;
 clear;
 
