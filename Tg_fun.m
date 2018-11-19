@@ -10,14 +10,23 @@ for i = 1:length(P)     % Iterate through every process
 end
 CEX_string(end) = ')';
 
-% delta H function
-H_string = '3/2*(';
+% F-C heating function
+FC_string = '3/2*(';
 for i = 1:length(P)     % Iterate through every process
-    if ~strcmpi(P(i).H,'0')     % If there is delta H
-        H_string = [H_string, P(i).R_str, '*c.qe*', P(i).H, '+'];  %note we changed this from eV to J
+    if (~strcmpi(P(i).H,'0')&&strcmpi(P(i).type,''))     % If there is delta H & not VT
+        FC_string = [FC_string, P(i).R_str, '*c.qe*', P(i).H, '+'];  %note we changed this from eV to J
     end
 end
-H_string(end) = ')';
+FC_string(end) = ')';
+
+% V-T heating function
+VT_string = '3/2*(';
+for i = 1:length(P)     % Iterate through every process
+    if (~strcmpi(P(i).H,'0')&&strcmpi(P(i).type,'VT'))     % If there is delta H & not VT
+        VT_string = [VT_string, P(i).R_str, '*c.qe*', P(i).H, '+'];  %note we changed this from eV to J
+    end
+end
+VT_string(end) = ')';
 
 % thermal conductivity
 k_string ='(';
@@ -30,12 +39,11 @@ for i =1:length(particles_array)
 end
 g_k(end) = '';
 k_string = [k_string,g_k,')^-1'];
-
+k_string = [k_string,'*(a.T_gas-c.T_wall)/c.lambda^2'];
 
 % gas flow energy loss
 
 flow_string = 'c.flow_rate/c.vol*3/2*c.Kb*(c.T_inlet-a.T_gas*(1+(c.Kb*a.T_gas*N_tot-c.P_0)/c.P_0))';
-
 
 % electron collisions 
 e_string = '3/2*c.Kb*(';
@@ -46,7 +54,7 @@ for i = 1:length(P)     % Iterate through every process
 end
 e_string(end) = ')';
 
-dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',H_string,'-',k_string,'+',flow_string,'+',e_string];
+dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string];
 % dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',k_string,'+',flow_string,'+',e_string]; %for testing
 
 dTg_fun_test = str2func(['@(x,a,c,particles,particles_array,N_tot,t,P)',dTg_fun_return_string]); %make function

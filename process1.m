@@ -13,7 +13,7 @@ classdef process1
         %R = ''; %rate of reachtion R (function)
      end
     properties (Constant)
-        possibleTypes = {'CEX', 'Elastic'};
+        possibleTypes = {'CEX', 'Elastic', 'VT'};
     end
     methods
         function obj = process1(input,output,rate,E, H) %constructor

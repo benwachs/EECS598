@@ -182,6 +182,7 @@ function [particles, p] = HW4_processes()
     for i = 1:numel(particles_cell)
         if particles_cell{i}.charge == 0
             p = [p, process1({O2_v, particles_cell{i}}, {O2, particles_cell{i}}, '2.0*10^-12*(a.T_gas/300)^0.5*10^-6', '0', num2str(particles_cell{i}.E_excite))];
+            p(end) = p(end).setType('VT');
         end
     end
     
