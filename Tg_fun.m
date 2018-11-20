@@ -2,7 +2,7 @@ function dTg_fun_return = Tg_fun(P,particles_array)
 %returns function handle for Tgas
 
 % charge exchange function
-CEX_string = '3/2*c.Kb*(a.T_ion-a.T_gas)*(';
+CEX_string = '3/2*c.Kb*(T_ion-a.T_gas)*(';
 for i = 1:length(P)     % Iterate through every process
     if strcmpi(P(i).type,'CEX')     % If process is CEX
         CEX_string = [CEX_string, P(i).R_str,'+'];  %
@@ -54,10 +54,10 @@ for i = 1:length(P)     % Iterate through every process
 end
 e_string(end) = ')';
 
-dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string];
-% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',k_string,'+',flow_string,'+',e_string]; %for testing
+% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string];
+ dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string,')'];
 
-dTg_fun_test = str2func(['@(x,a,c,particles,particles_array,N_tot,t,P)',dTg_fun_return_string]); %make function
+dTg_fun_test = str2func(['@(x,a,c,particles,particles_array,N_tot,t,P,T_ion)',dTg_fun_return_string]); %make function
 
 dTg_fun_return{1} = dTg_fun_test; %putting it in a cell MIGHT make it faster
 

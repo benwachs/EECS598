@@ -59,11 +59,11 @@ function [particles, p] = HW4_processes()
     p(9) = process1({Ar_ex,Ar_ex},{Ar_i,Ar,e},... %penning ionization
         '1.2*10^-9*10^-6','0');
     p(10) = process1({Ar_i},{Ar},... % wall neutralization
-        'particles.Ar_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0');
+        'particles.Ar_i.D(c,a,N_tot,T_ion)*(1+(a.Te/(T_ion*c.K2eV)))/c.lambda^2','0');
 %     p(11) = process1({e},{},... % wall neutralization (e)
 %         'particles.Ar_i.D(c)*(1+(a.Te/c.T_ion_eV))/c.lambda^2','0');
     p(11) = process1({Ar_ex},{Ar},... % wall quenching
-        'particles.Ar.D(c,a,N_tot)/c.lambda^2','0'); 
+        'particles.Ar.D(c,a,N_tot,T_ion)/c.lambda^2','0'); 
     
     p(yy+1) = process1({e,O2},{O2,e},... %elastic ADD STUFF!!
         '4.79*10^-8*a.Te^0.5 *10^-6',...
@@ -143,22 +143,22 @@ function [particles, p] = HW4_processes()
         '1.0*10^-10*(a.T_gas/300)^.5*10^-6','0', '-6.4');
     
     p(xx+24) = process1({O2_i},{O2},...%ion neutralization on wall
-        'particles.O2_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0');
+        'particles.O2_i.D(c,a,N_tot,T_ion)*(1+(a.Te/(T_ion*c.K2eV)))/c.lambda^2','0');
     p(xx+25) = process1({O2_ex},{O2},... %metastable quenching on wall
-        'particles.O2_ex.D(c,a,N_tot)/c.lambda^2','0');
+        'particles.O2_ex.D(c,a,N_tot,T_ion)/c.lambda^2','0');
     p(xx+26) = process1({O2_v},{O2},... %vibrational quenching on wall
-        'particles.O2_v.D(c,a,N_tot)/c.lambda^2','0');
-    p(xx+27) = process1({O},{O2},... %recomb with sticking 1
-        '(c.Beta/2)*particles.O.D(c,a,N_tot)/c.lambda^2','0');
-    p(xx+28) = process1({O},{O},... %recomb with sticking 2
-        '(1-c.Beta)*particles.O.D(c,a,N_tot)/c.lambda^2','0');
+        'particles.O2_v.D(c,a,N_tot,T_ion)/c.lambda^2','0');
+    p(xx+27) = process1({O},{O,O2},... %recomb with sticking 1
+        'particles.O.D(c,a,N_tot,T_ion)/c.lambda^2','0');
+%     p(xx+28) = process1({O},{O},... %recomb with sticking 2
+%         'particles.O.D(c,a,N_tot)/c.lambda^2','0'); 
     
     
 %     The following processes are for homework 4.
     p = [p, process1({e, O}, {e, O}, '10^-7*10^-6', '0')];  % Elastic collision
     p(end) = p(end).setType('Elastic');
 %     
-    p = [p, process1({e, O}, {O_i, e, e}, '9*10^-9*a.Te^0.7*exp(-13.62/a.Te)*10^-6', '13.62')];  %Ionization
+    p = [p, process1({e, O}, {O_i, e, e}, '9.0*10^-9*a.Te^0.7*exp(-13.62/a.Te)*10^-6', '13.62')];  %Ionization
 %     
     p = [p, process1({O_neg, O_i}, {O, O}, '4*10^-8*(300/a.T_gas)^-0.43*10^-6', '0')]; %ion ion neutralization WAS WRONG
 %     
@@ -174,9 +174,9 @@ function [particles, p] = HW4_processes()
     p(end) = p(end).setType('CEX');
 %     
     p = [p, process1({e, O_neg}, {O, e, e}, '5.47*10^-8*a.Te^.324*exp(-2.98/a.Te)*10^-6', '0')]; %detachment
-    
+%     
     p = [p, process1({O_i},{O},...%O ion neutralization on wall
-        'particles.O_i.D(c,a,N_tot)*(1+(a.Te/(a.T_ion*c.K2eV)))/c.lambda^2','0')];
+        'particles.O_i.D(c,a,N_tot,T_ion)*(1+(a.Te/(T_ion*c.K2eV)))/c.lambda^2','0')];
     
     particles_cell = struct2cell(particles);    % Having to remake this for indexing
     for i = 1:numel(particles_cell)

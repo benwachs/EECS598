@@ -3,7 +3,7 @@ clear;
 
 tic %start timing
 
-t_final_ms = 25; %ms
+t_final_ms = 20; %ms
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -80,8 +80,11 @@ particles_cell = struct2cell(particles); %make a cell array from particles (Stru
 
 for i = 1:length(particles_cell)
     particles_cell{i} = particles_cell{i}.setDepend(P); %initialize depend 
-    if i == 4
-        particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-0.5; %this is for that Beta term, should be done better but I don't feel like it
+    if i == 4 %if O2
+        particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-(1-c.Beta/2); %this is for that Beta term, should be done better but I don't feel like it
+    end
+    if i == 8 %if O
+        particles_cell{i}.depend(41) = particles_cell{i}.depend(41)-(c.Beta); %this is for that Beta term, should be done better but I don't feel like it
     end
 
     particles_array(i) = particles_cell{i}; %make an array of the particles (I know theres a faster way)
@@ -97,9 +100,9 @@ end
 
 names{end+1} = 'Te'; %last name is Te, will have to add Ti, Tg
 names{end+1} = 'T_gas'; %last name is Te, will have to add Ti, Tg
-names{end+1} = 'T_ion'; %last name is Te, will have to add Ti, Tg
+% names{end+1} = 'T_ion'; %last name is Te, will have to add Ti, Tg
 
-NT = zeros(length(particles_array)+3,1); %Densities/Te: build empty array for initial densities and Te (will add Ti, Tg)
+NT = zeros(length(particles_array)+2,1); %Densities/Te: build empty array for initial densities and Te (will add Ti, Tg)
 NT(1) = N_Ar_0; %these values were set in the first section
 NT(2) = N_Ar_ex_0;
 NT(3) = N_Ar_i_0;
@@ -110,10 +113,10 @@ NT(7) = N_O2_i_0;
 NT(8) = N_O_0;
 NT(9) = N_O_neg_0;
 NT(10) = N_0_i_0;
-NT(end-3) = N_e_0;
-NT(end-2) = Te_0; %eV
-NT(end-1) = T_gas_0; %kelvin
-NT(end) = T_ion_0; %kelvin
+NT(end-2) = N_e_0;
+NT(end-1) = Te_0; %eV
+NT(end) = T_gas_0; %kelvin
+% NT(end) = T_ion_0; %kelvin
 
 fnc_cells = process_fun2(P); %this is where the magic happens, this function returns a cell array of fnc handles
 dTe_fun = Te_fun2(P); %this returns a cell array (dim 1x1) with the Te function handle
@@ -122,7 +125,7 @@ dTg_fun = Tg_fun(P,particles_array);
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun,dTg_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
 options= odeset('OutputFcn', @odeplot); %used if you want to plot live
-
+% figure
 [t,x] = ode45(integrand,[0,t_final],NT);
 
 toc
