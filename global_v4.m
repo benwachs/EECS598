@@ -3,7 +3,7 @@ clear;
 
 tic %start timing
 
-t_final_ms = 20; %ms
+t_final_ms = 5; %ms
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -12,7 +12,9 @@ Te_0 = 0.5; %electron temp, eV
 r_reactor_cgs = 4; %cm
 l_reactor_cgs = 30; %cm
 flow_rate_sccm = 1000; %sccm
-% flow_rate_sccm = 1; %sccm testing
+c.T_wall = 300; %kelvin
+c.T_inlet = 300; %kelvin
+c.Beta = 0.5;
 
 %constants (MKS)
 c.q_e =1.60217662e-19;
@@ -39,8 +41,6 @@ c.TgeV = TgeV;
 c.T_gas = T_gas_0;
 c.T_ion = T_ion_0;
 c.T_ion_eV = T_ion_0/11604.5;
-c.T_wall = 300; %kelvin
-
 c.N_0_atm = 101325/(273*c.Kb); %for diffusion calc
 c.N_0 = P_0/(c.Kb*T_gas_0); %m^-3
 c.P_0 = P_0;
@@ -48,11 +48,8 @@ c.N_T = c.N_0; %forget what this is for
 
 %flow stuff
 c.flow_rate = 4.479*10^17*flow_rate_sccm; %atoms/s
-c.T_inlet = 300; %kelvin
 % c.f_O2 = 0.1;
 % c.f_Ar = 0.9;
-
-c.Beta = 0.5;
 
 %load particles and stuff
 [particles,P] = HW4_processes(); %load particles and processes
@@ -74,9 +71,7 @@ N_e_0 = N_e_0_cgs*10^6; %m^-3
 T_gas_0 = 300; %kelvin
 T_ion_0 = 300; %kelvin
 
-
 particles_cell = struct2cell(particles); %make a cell array from particles (Struct), this is so it can be iterated through in a for loop, there's probably a better way
-
 
 for i = 1:length(particles_cell)
     particles_cell{i} = particles_cell{i}.setDepend(P); %initialize depend 
@@ -125,7 +120,7 @@ dTg_fun = Tg_fun(P,particles_array);
 integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells,dTe_fun,dTg_fun); %this turns the large function into a function of only x,t as ODE45 requires
 
 options= odeset('OutputFcn', @odeplot); %used if you want to plot live
-% figure
+figure
 [t,x] = ode45(integrand,[0,t_final],NT);
 
 toc

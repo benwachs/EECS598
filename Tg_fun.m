@@ -54,8 +54,12 @@ for i = 1:length(P)     % Iterate through every process
 end
 e_string(end) = ')';
 
-% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string];
- dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string,')'];
+ 
+dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(',CEX_string,'-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string,')']; %Base case
+% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(','-',FC_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string,')']; %No CEX
+% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(',CEX_string,'-',VT_string,'-',k_string,'+',flow_string,'+',e_string,')']; %No FC
+% dTg_fun_return_string = ['1/(3/2*c.Kb*N_tot)*(',CEX_string,'-',FC_string,'-',k_string,'+',flow_string,'+',e_string,')']; %No VT
+
 
 dTg_fun_test = str2func(['@(x,a,c,particles,particles_array,N_tot,t,P,T_ion)',dTg_fun_return_string]); %make function
 
