@@ -10,7 +10,7 @@ function dTe_fun = Te_fun2(P)
         end
     end
     E_string(end) = ''; %get rid of dangling + sign
-    dTe_string = strcat('1/(c.q_e)*2/3*(1/a.N_e)*((p_abs(t)/c.vol)-c.q_e*(',E_string,'))');
+    dTe_string = strcat('1/(c.q_e)*2/3*(1/a.N_e)*((p_abs_pulsed(t)/c.vol)-c.q_e*(',E_string,'))'); %NOTE P_ABS
     dTe_fun_test = str2func(['@(a,c,particles,N_tot,t)',dTe_string]); %changed for strcat
     dTe_fun{1} = dTe_fun_test;
 end

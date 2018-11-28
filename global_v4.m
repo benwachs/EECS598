@@ -3,7 +3,7 @@ clear;
 
 tic %start timing
 
-t_final_ms = 5; %ms
+t_final_ms = 6; %ms
 P_0_mtorr = 50; %Initial gas pressure, mTorr
 T_gas_0 = 300; %gas temp, kelvin
 T_ion_0 = 300; %ion temp, kelvin
@@ -11,7 +11,7 @@ N_e_0_cgs = 10e9; %electron density, cm^-3
 Te_0 = 0.5; %electron temp, eV
 r_reactor_cgs = 4; %cm
 l_reactor_cgs = 30; %cm
-flow_rate_sccm = 1000; %sccm
+flow_rate_sccm = 500; %sccm
 c.T_wall = 300; %kelvin
 c.T_inlet = 300; %kelvin
 c.Beta = 0.5;
@@ -121,6 +121,6 @@ integrand = @(t,x) dxdt_final2(t,x,c,particles,particles_array,P,names,fnc_cells
 
 options= odeset('OutputFcn', @odeplot); %used if you want to plot live
 figure
-[t,x] = ode45(integrand,[0,t_final],NT);
+[t,x] = ode45(integrand,[0,t_final],NT,options);
 
 toc
